@@ -1,1 +1,5 @@
 __pycache__
+
+## general perl
+blib/
+pm_to_blib
