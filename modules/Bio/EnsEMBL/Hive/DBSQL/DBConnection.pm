@@ -220,7 +220,7 @@ our $pass_internal_counter = 0;
 sub to_cmd {
     my ($self, $executable, $prepend, $append, $sqlcmd, $hide_password_in_env) = @_;
 
-    my $driver = $self->driver || 'mysql';
+    my $driver = lc $self->driver || 'mysql';
 
     my $dbname = $self->dbname;
     if($sqlcmd) {
@@ -375,7 +375,7 @@ sub run_in_transaction {
 
 sub has_write_access {
     my $self = shift;
-    if ($self->driver eq 'mysql') {
+    if (lc $self->driver eq 'mysql') {
         my $current_user = $self->db_handle->selectrow_arrayref('SELECT CURRENT_USER()');
         # munge grantee - user and host specification need single quoting
         my $grantee = join '@', map { qq{'$_'} } split /@/, @$current_user[0];
@@ -401,7 +401,7 @@ sub has_write_access {
             $has_write_access_from_some_host ||= !!(3 == @$entry[0]);
         }
         return $has_write_access_from_some_host;
-    } elsif ($self->driver eq 'pgsql') {
+    } elsif (lc $self->driver eq 'pgsql') {
         my $access_sql =
             q{SELECT COUNT(*)
                 FROM (SELECT DISTINCT PRIVILEGE_TYPE
